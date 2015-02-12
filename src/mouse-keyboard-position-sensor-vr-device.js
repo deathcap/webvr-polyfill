@@ -14,6 +14,8 @@
  */
 var PositionSensorVRDevice = require('./base.js').PositionSensorVRDevice;
 var THREE = require('./three-math.js');
+var vec2 = require('gl-vec2');
+var quat = require('gl-matrix-quat');
 
 // How much to rotate per key stroke.
 var KEY_SPEED = 0.15;
@@ -43,12 +45,13 @@ function MouseKeyboardPositionSensorVRDevice() {
 
   // State variables for calculations.
   this.euler = new THREE.Euler();
+  //this.orientation = quat.create(); // TODO
   this.orientation = new THREE.Quaternion();
 
   // Variables for mouse-based rotation.
-  this.rotateStart = new THREE.Vector2();
-  this.rotateEnd = new THREE.Vector2();
-  this.rotateDelta = new THREE.Vector2();
+  this.rotateStart = vec2.create();
+  this.rotateEnd = vec2.create();
+  this.rotateDelta = vec2.create();
 }
 MouseKeyboardPositionSensorVRDevice.prototype = new PositionSensorVRDevice();
 
@@ -113,7 +116,7 @@ MouseKeyboardPositionSensorVRDevice.prototype.animateKeyTransitions_ = function(
 };
 
 MouseKeyboardPositionSensorVRDevice.prototype.onMouseDown_ = function(e) {
-  this.rotateStart.set(e.clientX, e.clientY);
+  vec2.set(this.rotateStart, e.clientX, e.clientY);
   this.isDragging = true;
 };
 
@@ -122,10 +125,10 @@ MouseKeyboardPositionSensorVRDevice.prototype.onMouseMove_ = function(e) {
   if (!this.isDragging) {
     return;
   }
-  this.rotateEnd.set(e.clientX, e.clientY);
+  vec2.set(this.rotateEnd, e.clientX, e.clientY);
   // Calculate how much we moved in mouse space.
-  this.rotateDelta.subVectors(this.rotateEnd, this.rotateStart);
-  this.rotateStart.copy(this.rotateEnd);
+  vec2.subtract(this.rotateDelta, this.rotateEnd, this.rotateStart);
+  vec2.copy(this.rotateStart, this.rotateEnd);
 
   // Keep track of the cumulative euler angles.
   var element = document.body;

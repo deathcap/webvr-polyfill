@@ -21,5 +21,10 @@
   "bugs": {
     "url": "https://github.com/borismus/webvr-polyfill/issues"
   },
-  "homepage": "https://github.com/borismus/webvr-polyfill"
+  "homepage": "https://github.com/borismus/webvr-polyfill",
+  "dependencies": {
+    "gl-vec3": "^1.0.3",
+    "gl-vec2": "^1.0.0",
+    "gl-matrix-quat": "^2.2.1-npm"
+  }
 }
